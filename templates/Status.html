@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Project Status</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-select.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-select.min.css" rel="stylesheet">
+
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-inverse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav nav-pills">
+                    <li role="presentation"> <a href="/{{ doc['userid'] }}">Dashboard</a> </li>
+                    <li role="presentation" class="active"> <a href="/{{ doc['userid'] }}/status">Project Status</a> </li>
+                    <li role="presentation"> <a href="/">Logout</a> </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <div class="jumbotron">
+        <h1 class="text-center">{{ doc['projectName'] }} </h1>
+        {% if doc['story'] is defined%}
+            <h2 class="text-center"> Scrum Project Status </h2>
+        {% endif %}
+        {% if doc['cards'] is defined%}
+            <h2 class="text-center"> Kanban Project Status </h2>
+        {% endif %}
+        {% if doc['tasks'] is defined%}
+            <h2 class="text-center"> Waterfall Project Status </h2>
+        {% endif %}
+    </div>
+
+   {% if doc['cards'] is defined %}
+       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+       <div id="barchart_material"  style="width: 1000px; height: 300px; "></div>
+
+        <script type="text/javascript">
+          var a = []
+          var c = []
+          a= {{ a }}
+
+          for(var i = 0; i < a.length; i++) {
+              if(a[i] <= 3){
+                 c[i] = 0;
+              }
+              else{
+                  c[i] = a[i];
+                  a[i] = 0;
+
+              }
+          }
+          google.load("visualization", "1.1", {packages:["bar"]});
+          google.setOnLoadCallback(drawChart);
+          function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Card Type', 'Below Threshold', 'Above Threshold'],
+                ['To Do', a[0], c[0]],
+                ['In Progress', a[1], c[1]],
+                ['In Review', a[2], c[2]],
+                ['Done', a[3], c[3]]
+              ]);
+
+            var options = {
+              chart: {
+                title: 'Threshold of each Card Type',
+                subtitle: 'Threshold Limit = 3',
+              },
+              bars: 'horizontal',
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+            chart.draw(data, options);
+          }
+        </script>
+
+  {% endif %}
+
+  {% if doc['tasks'] is defined %}
+
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['bar', 'corechart']}]}"></script>
+    <div id="piechart" style="width: 49%; height: 400px; float: left"></div>
+    <div id="barchart_material"  style="width: 49%; height: 400px;float: left "></div>
+    <script>
+    google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          var a = [];
+          a = {{ a }};
+          var c = a[0] + a[1] + a[2];
+          var n = a[2] / c * 100;
+          var r =  a[0] / c * 100;
+          var i = a[1] /c * 100;
+
+
+
+          var data = google.visualization.arrayToDataTable([
+              ['Task Type', 'Percentage'],
+              ['Completed', a[2]],
+              ['Remaining', a[0]+a[1]]
+          ]);
+
+
+          var options = {
+              title: 'Project Completion = ' + n.toFixed() + ' %',
+              is3D: true,
+          };
+
+
+          var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+          chart.draw(data, options);
+
+          var data2 = google.visualization.arrayToDataTable([
+                ['Task Type', 'Percent Completed',{ role: 'style' },{role: 'annotation'}],
+                ['Requested', parseInt(r.toFixed()), 'red', r.toFixed()],
+                ['In Progress', parseInt(i.toFixed()),'blue', i.toFixed()],
+                ['Completed', parseInt(n.toFixed()),'green', n.toFixed()]
+          ]);
+
+            var options2 = {
+              title: 'Percentage Completed for Task types',
+              bars: 'vertical',
+              bar: { groupWidth: '30%' },
+              vAxis: {format: 'decimal'},
+              legend: { position: "none" },
+            };
+
+            var chart2 = new google.visualization.ColumnChart(document.getElementById('barchart_material'));
+            chart2.draw(data2, options2);
+
+      }
+      </script>
+
+  {% endif %}
+
+  {% if doc['story'] is defined %}
+   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+   <div id="linechart_material"></div>
+    <script type="text/javascript">
+        google.load('visualization', '1.1', {packages: ['line','corechart']});
+        google.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('number', 'Weeks');
+          data.addColumn('number', 'Actual Burndown');
+          data.addColumn('number',  'Initial Burndown');
+
+           data.addRows({{ dataArray }});
+
+          var options = {
+            chart: {
+              title: 'Burndown Chart',
+            },
+            series: {
+                0: {axis: 'WorkRemaining'},
+            },
+            axes: {
+              y: {
+                WorkRemaining: {label: 'Work Remaining (in Hours)'},
+              }
+             },
+            colors: ['#a52714', '#097138'],
+            width: 1000,
+            height: 350
+          };
+
+          var chart = new google.charts.Line(document.getElementById('linechart_material'));
+          chart.draw(data, options);
+        }
+    </script>
+  {% endif %}
+
+</body>
+</html>

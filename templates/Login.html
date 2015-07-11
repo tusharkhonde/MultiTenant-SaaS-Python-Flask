@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{ title }}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Multi-Tenant SaaS</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" action="/login" id="form_login" method="post">
+            <div class="form-group">
+              <input type="text" placeholder="Username" id="user" name="user" class="form-control" >
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" id="pass" name="pass" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success" id="btn_login" onclick="return validate_login()">Login</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+      <!-- Jumbotron -->
+    <div class="jumbotron">
+        <div class="container">
+         <h1>Sign Up Now!</h1>
+         <p class="lead"> Manage your projects using Kanban, Scrum or Waterfall model. </p>
+{#         <p><a class="btn btn-primary btn-lg" href="#" role="button">SignUp &raquo;</a></p>#}
+            <li class="dropdown">
+                     <a class="dropdown-toggle" data-toggle="dropdown">Sign Up <b class="caret"></b></a>
+                     <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+                        <li>
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <form class="form" role="form" method="post" action="/signup" accept-charset="UTF-8" id="login-nav">
+                                    <div class="form-group">
+                                       <label class="sr-only" for="exampleInputUsername">Username</label>
+                                       <input type="text" class="form-control" id="exampleInputUsername" name="username" placeholder=" Enter Username" required>
+                                    </div>
+                                     <div class="form-group">
+                                       <label class="sr-only" for="exampleInputUsername">Username</label>
+                                       <input type="text" class="form-control" id="exampleInputUsername" name="firstName" placeholder=" Enter First name" required>
+                                    </div>
+                                     <div class="form-group">
+                                       <label class="sr-only" for="exampleInputUsername">Username</label>
+                                       <input type="text" class="form-control" id="exampleInputUsername" name="lastName" placeholder=" Enter Last name" required>
+                                    </div>
+                                    <div class="form-group">
+                                       <label class="sr-only" for="exampleInputPassword2">Password</label>
+                                       <input type="password" class="form-control" id="exampleInputPassword2" name="password" placeholder=" Enter Password" required>
+                                    </div>
+                                        <input type="hidden" id="taskType" name="projectType"  value="">
+                                     <div class="form-group">
+                                        <label class="dropdown-menu " for="selectProject">Tenant Type</label>
+                                           <div class="dropdown" align="left">
+                                              <select class="form-inline input-sm" name="selectProject" id="selectProject" style="width: 220px" onchange="return add_Text()">
+                                                 <option value="" selected disabled>Tenant Type</option>
+                                                  <option id="opt_1" value="kanban">Kanban</option>
+                                                  <option id="opt_2" value="scrum">Scrum</option>
+                                                  <option id="opt_3" value="waterfall">Waterfall</option>
+                                              </select>
+                                           </div> <br>
+                                      </div>
+                                    <div class="form-group">
+                                       <button type="submit" class="btn btn-success btn-block">Sign Up</button>
+                                    </div>
+                                 </form>
+                              </div>
+                           </div>
+                        </li>
+                     </ul>
+            </li>
+        </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2015 Company.com<p>
+      </div>
+    </footer>
+
+    </div> <!-- /container -->
+
+
+     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            //Handles menu drop down
+            $('.dropdown-menu').find('form').click(function (e) {
+                 e.stopPropagation();
+             });
+        });
+
+        function add_Text() {
+                var x = $("#selectProject option:selected").val();
+                $('input[name="projectType"]').val(x);
+
+        }
+
+        function validate_login(event){
+                var name = $("#user").val();
+                var pass = $("#pass").val();
+                if (validation(name, pass) == 1 ) // Calling validation function.
+                {
+{#                    $.ajax({#}
+{#                         url: '/login',#}
+{#                         data: $('#form_login').serialize(),#}
+{#                         type: 'POST'#}
+{#                        });#}
+                    $('#form_login').submit
+                }
+
+                else {
+                    $("#form_login").get(0).reset();
+                }
+                event.preventDefault();
+            }
+
+            function validation(name, pass) {
+
+                if (name == '' || pass == '') {
+                    alert("Please fill all fields...!!!!!!");
+                    var x = 0;
+                    return x;
+                }
+                else {
+                    var x = 1;
+                    return x;
+                }
+            }
+
+
+    </script>
+
+
+</body>
+</html>

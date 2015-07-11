@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{ title }}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-inverse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav nav-pills">
+                    <li role="presentation"><a href="/{{ doc['userid'] }}">Dashboard</a></li>
+                    <li role="presentation"><a href="/{{ doc['userid'] }}/status">Project Status</a></li>
+                    <li role="presentation"><a href="/">Logout</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <div class="jumbotron">
+        <h1 class="text-center">{{ doc['projectName'] }} </h1>
+        {% if doc['story'] is defined%}
+            <h2 class="text-center"> Story Details </h2>
+        {% endif %}
+        {% if doc['cards'] is defined%}
+            <h2 class="text-center"> Card Details </h2>
+        {% endif %}
+        {% if doc['tasks'] is defined%}
+            <h2 class="text-center"> Task Details </h2>
+        {% endif %}
+    </div>
+
+
+    {% if doc['story'] is defined%}
+            {% for story in doc['story'] %}
+            <form class="form-group" id="form-story" action="/{{ doc['userid'] }}/update/story" method="post">
+            <label class="control-label col-lg-5">Story ID</label>
+                <input type="text" name="storyId" class="text-center form-inline col-lg-push-8"  value="{{ story.storyId}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Story Title</label>
+                <input type="text" name="storyTitle" class="text-center form-inline col-lg-push-8"  value="{{ story.storyTitle}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Story Description</label>
+                <input type="text" name="storyDescription" class="text-center form-inline col-lg-push-8"  value="{{ story.storyDescription}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Total Hours</label>
+                <input type="text" name="totalHours" class="text-center form-inline col-lg-push-8" value="{{ story.totalHours}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Remaining Hours</label>
+                <input type="text" name="remainingHours" class="text-center form-inline col-lg-push-8" value="{{ story.remainingHours}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Story Owner</label>
+                <input type="text" name="assignedTo" class="text-center form-inline col-lg-push-8" value="{{ story.assignedTo}}"> <br> <br>
+
+            <p><div align="center"><button type="submit" class="btn btn-primary" id="btn_story">Update Story</button>
+            <a class="btn btn-primary btn-group-lg" role="button" href="/{{ doc['userid'] }}/delete/story/{{ story.storyId }}" id="btn_story_delete">Delete Story</a></div></p>
+            </form>
+            {% endfor %}
+    {% endif %}
+
+    {% if doc['cards'] is defined%}
+            {% for story in doc['cards'] %}
+            <form class="form-group" id="form-cards" action="/{{ doc['userid'] }}/update/cards" method="post">
+            <label class="control-label col-lg-5">Card ID</label>
+                <input type="text" name="cardId" class="text-center form-inline col-lg-push-8"  value="{{ story.cardId}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Card Name</label>
+                <input type="text" name="cardName" class="text-center form-inline col-lg-push-8"  value="{{ story.cardName}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Card Description</label>
+                <input type="text" name="cardDescription" class="text-center pre-scrollable form-inline col-lg-push-8"  value="{{ story.cardDescription}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Card Assigned To</label>
+                <input type="text" name="assignedTo" class="text-center form-inline col-lg-push-8" value="{{ story.assignedTo}}"> <br> <br>
+
+{#            <label class="control-label col-lg-5">Card Type</label>#}
+{#                <input type="text" name="cardType" class="text-center form-inline col-lg-push-8" value="{{ story.cardType}}"> <br> <br>#}
+
+            <label class="control-label col-lg-5">Card Type</label>
+               <div class="dropdown" align="left">
+                <select class="form-inline input-sm" name="selectCard" id="selectCard">
+                   <optgroup label="Card Type">
+                    <option id="opt_1" value="To Do">To Do</option>
+                    <option id="opt_2" value="In Progress">In Progress</option>
+                    <option id="opt_3" value="In Review">In Review</option>
+                    <option id="opt_4" value="Done">Done</option>
+                   </optgroup>
+                </select>
+               </div> <br>
+
+            <p><div align="center"><button type="submit" class="btn btn-primary btn-group-lg" id="btn_cards">Update Card</button>
+            <a class="btn btn-primary btn-group-lg" role="button" href="/{{ doc['userid'] }}/delete/cards/{{ story.cardId }}" id="btn_cards_delete">Delete Card</a></div> </p>
+            </form>
+            {% endfor %}
+    {% endif %}
+    {% if doc['tasks'] is defined%}
+            {% for story in doc['tasks'] %}
+            <form class="form-group" id="form-tasks" action="/{{ doc['userid'] }}/update/tasks" method="post">
+            <label class="control-label col-lg-5">Task ID</label>
+                <input type="text" name="taskId" class="text-center form-inline col-lg-push-8" value="{{ story.taskId}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Task Name</label>
+                <input type="text" name="taskName" class="text-center form-inline col-lg-push-8"  value="{{story.taskName}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Task Description</label>
+                <input type="text" name="taskDescription" class="text-center pre-scrollable form-inline col-lg-push-8"  value="{{story.taskDescription}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Start Date</label>
+                <input type="text" name="startDate" class="text-center form-inline col-lg-push-8" value="{{story.startDate}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Finish Date</label>
+                <input type="text" name="finishDate" class="text-center form-inline col-lg-push-8" value="{{story.finishDate}}"> <br> <br>
+
+            <label class="control-label col-lg-5">Task Assigned To</label>
+                <input type="text" name="assignedTo" class="text-center form-inline col-lg-push-8" value="{{story.assignedTo}}"> <br> <br>
+
+{#            <label class="control-label col-lg-5">Task Type</label>#}
+{#                <input type="text" name="taskType" class="text-center form-inline col-lg-push-8" value="{{story.taskType}}"> <br> <br>#}
+            <label class="control-label col-lg-5">Task Type</label>
+               <div class="dropdown" align="left">
+                <select class="form-inline input-sm" name="selectTask" id="selectTask">
+                   <optgroup label="Task Type">
+                    <option id="opt_1" value="Requested">Requested</option>
+                    <option id="opt_2" value="In Progress">In Progress</option>
+                    <option id="opt_3" value="Completed">Completed</option>
+                   </optgroup>
+                </select>
+               </div> <br>
+
+            <p><div align="center"><button type="submit" class="btn btn-primary" id="btn_tasks">Update Task</button>
+            <a class="btn btn-primary btn-group-lg" role="button" href="/{{ doc['userid'] }}/delete/tasks/{{ story.taskId }}" id="btn_tasks_delete">Delete Task</a></div></p>
+            </form>
+            {% endfor %}
+    {% endif %}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+</body>
+</html>
