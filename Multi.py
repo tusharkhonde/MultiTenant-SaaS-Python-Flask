@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, flash, render_template, request, redirect
 from pymongo import MongoClient
 import pymongo
 from datetime import datetime
@@ -84,10 +84,11 @@ def edit(user, proj, id):
     elif proj == 'cards':
         doc = collection.find_one({'userid': user, 'cards': {"$elemMatch": {'cardId': id}}}, {'_id': 0, 'userid': 1, 'projectName': 1, 'cards.$': 1})
         return render_template('Details.html', title='Edit Card', doc=doc)
-    else:
+    elif proj == 'story':
         doc = collection.find_one({'userid': user, 'story': {"$elemMatch": {'storyId': id}}}, {'_id': 0, 'userid': 1, 'projectName': 1, 'story.$': 1})
         return render_template('Details.html', title='Edit Story', doc=doc)
-
+    else:
+        pass
 
 @app.route('/<user>/update/<proj>', methods=['POST'])
 def update(user, proj):
@@ -267,6 +268,14 @@ def count_taskType(user, type):
             return result['count']
     else:
         return 0
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template("Error.html", title="500 Error", error="Internal server error"), error
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template("Error.html", title="404 Error", error="Requested page not found"), error
 
 if __name__ == '__main__':
     app.run()
