@@ -2,4 +2,5 @@
 Multi-tenant SaaS application using Python Flask framework
 
 Go to terminal -
-In project directory type - python Multi.py
+In project directory and type - 
+python Multi.py
