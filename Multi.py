@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 try:
-    client = MongoClient('mongodb://tushardbuser:tushardbpass@ds045021.mongolab.com:45021/tushardb')
+    client = MongoClient('Enter mongodb uri here');
     # noinspection PyUnresolvedReferences
     print("Connected successfully!!!")
     db = client.tushardb
